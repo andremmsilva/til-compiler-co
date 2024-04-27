@@ -1,0 +1,6 @@
+.vscode
+.auto
+til_scanner.cpp
+**.o
+**.output
+*.tab*
