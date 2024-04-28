@@ -239,8 +239,26 @@ void til::xml_writer::do_alloc_node(til::alloc_node * const node, int lvl) {
   // TODO
 }
 
+void til::xml_writer::do_null_node(til::null_node * const node, int lvl) {
+  // TODO
+}
+
 //---------------------------------------------------------------------------
 
 void til::xml_writer::do_variable_declaration_node(til::variable_declaration_node * const node, int lvl) {
+  // TODO
+}
+
+//---------------------------------------------------------------------------
+
+void til::xml_writer::do_function_declaration_node(til::function_declaration_node * const node, int lvl) {
+  // TODO
+}
+
+void til::xml_writer::do_function_definition_node(til::function_definition_node * const node, int lvl) {
+  // TODO
+}
+
+void til::xml_writer::do_function_call_node(til::function_call_node * const node, int lvl) {
   // TODO
 }
