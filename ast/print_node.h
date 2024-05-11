@@ -6,17 +6,17 @@
 namespace til {
 
   class print_node: public cdk::basic_node {
-    cdk::expression_node *_argument; // TODO - Change to sequence node
+    cdk::sequence_node *_arguments;
     bool _newline = false; // true -> println
 
   public:
-    print_node(int lineno, cdk::expression_node *arguments, bool newline = false) :
-        cdk::basic_node(lineno), _argument(arguments), _newline(newline) {
+    print_node(int lineno, cdk::sequence_node *arguments, bool newline = false) :
+        cdk::basic_node(lineno), _arguments(arguments), _newline(newline) {
     }
 
   public:
-    cdk::expression_node* argument() {
-      return _argument;
+    inline cdk::sequence_node* arguments() {
+      return _arguments;
     }
     bool newline() {
       return _newline;

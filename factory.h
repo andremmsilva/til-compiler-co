@@ -7,25 +7,25 @@
 
 namespace til {
 
-  /**
-   * This class implements the compiler factory for the Simple compiler.
-   */
-  class factory: public cdk::yy_factory<til_scanner> {
     /**
-     * This object is automatically registered by the constructor in the
-     * superclass' language registry.
+     * This class implements the compiler factory for the Simple compiler.
      */
-    static factory _self;
+    class factory : public cdk::yy_factory<til_scanner> {
+        /**
+         * This object is automatically registered by the constructor in the
+         * superclass' language registry.
+         */
+        static factory _self;
 
-  protected:
-    /**
-     * @param language name of the language handled by this factory (see .cpp file)
-     */
-    factory(const std::string &language = "til") :
-        cdk::yy_factory<til_scanner>(language) {
-    }
+    protected:
+        /**
+         * @param language name of the language handled by this factory (see .cpp file)
+         */
+        factory(const std::string &language = "til") :
+                cdk::yy_factory<til_scanner>(language) {
+        }
 
-  };
+    };
 
 } // til
 

@@ -1,5 +1,6 @@
 .vscode
 .auto
+.idea
 til_scanner.cpp
 **.o
 **.output

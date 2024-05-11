@@ -10,7 +10,9 @@
 
 /* do not edit -- include node forward declarations */
 #define __NODE_DECLARATIONS_ONLY__
+
 #include ".auto/all_nodes.h"  // automatically generated
+
 #undef __NODE_DECLARATIONS_ONLY__
 /* do not edit -- end */
 
@@ -19,52 +21,54 @@
 //!
 class basic_ast_visitor {
 protected:
-  //! The owner compiler
-  std::shared_ptr<cdk::compiler> _compiler;
+    //! The owner compiler
+    std::shared_ptr<cdk::compiler> _compiler;
 
 private:
 
-  // last symbol inserted in symbol table
-  std::shared_ptr<til::symbol> _new_symbol;
+    // last symbol inserted in symbol table
+    std::shared_ptr<til::symbol> _new_symbol;
 
 protected:
-  basic_ast_visitor(std::shared_ptr<cdk::compiler> compiler) :
-      _compiler(compiler) {
-  }
+    basic_ast_visitor(std::shared_ptr<cdk::compiler> compiler) :
+            _compiler(compiler) {
+    }
 
-  bool debug() {
-    return _compiler->debug();
-  }
+    bool debug() {
+        return _compiler->debug();
+    }
 
-  std::ostream &os() {
-    return *_compiler->ostream();
-  }
-
-public:
-  virtual ~basic_ast_visitor() {
-  }
+    std::ostream &os() {
+        return *_compiler->ostream();
+    }
 
 public:
-  std::shared_ptr<til::symbol> new_symbol() {
-    return _new_symbol;
-  }
-
-  void set_new_symbol(std::shared_ptr<til::symbol> symbol) {
-    _new_symbol = symbol;
-  }
-
-  void reset_new_symbol() {
-    _new_symbol = nullptr;
-  }
+    virtual ~basic_ast_visitor() {
+    }
 
 public:
-  // do not edit these lines
+    std::shared_ptr<til::symbol> new_symbol() {
+        return _new_symbol;
+    }
+
+    void set_new_symbol(std::shared_ptr<til::symbol> symbol) {
+        _new_symbol = symbol;
+    }
+
+    void reset_new_symbol() {
+        _new_symbol = nullptr;
+    }
+
+public:
+    // do not edit these lines
 #define __IN_VISITOR_HEADER__
 #define __PURE_VIRTUAL_DECLARATIONS_ONLY__
+
 #include ".auto/visitor_decls.h"       // automatically generated
+
 #undef __PURE_VIRTUAL_DECLARATIONS_ONLY__
 #undef __IN_VISITOR_HEADER__
-  // do not edit these lines: end
+    // do not edit these lines: end
 
 };
 
