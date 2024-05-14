@@ -45,7 +45,6 @@
 %token tPROGRAM tBLOCK tFUNCTION
 %token tPRINT tPRINTLN
 
-%nonassoc tIFX
 %left tOR
 %left tAND
 %nonassoc '~'
@@ -95,7 +94,6 @@ declarations : declarations declaration    { $$ = new cdk::sequence_node(LINE, $
 declaration : '(' type tIDENTIFIER      ')'    { $$ = new til::variable_declaration_node(LINE, tPRIVATE, $2, *$3, nullptr); delete $3; }
             | '(' type tIDENTIFIER expr ')'    { $$ = new til::variable_declaration_node(LINE, tPRIVATE, $2, *$3, $4); delete $3; }
             | '(' tVAR tIDENTIFIER expr ')'    { $$ = new til::variable_declaration_node(LINE, tPRIVATE, nullptr, *$3, $4); delete $3; }
-            | '(' tIDENTIFIER expr      ')'    { $$ = new til::variable_declaration_node(LINE, tPRIVATE, nullptr, *$2, $3); delete $3; }
             ;
 
 program : '(' tPROGRAM decls_instrs ')'    { $$ = new til::function_node(LINE, $3); }
@@ -166,7 +164,7 @@ instruction : expr                            { $$ = new til::evaluation_node(LI
             | block                           { $$ = $1; }
             ;
 
-if_instruction : '(' tIF expr instruction ')' /*%prec tIFX */   { $$ = new til::if_node(LINE, $3, $4); }
+if_instruction : '(' tIF expr instruction ')'              { $$ = new til::if_node(LINE, $3, $4); }
                | '(' tIF expr instruction instruction ')'  { $$ = new til::if_else_node(LINE, $3, $4, $5); }
                ;
 
@@ -207,7 +205,7 @@ expr : tINTEGER                       { $$ = new cdk::integer_node(LINE, $1); }
      | function_def                   { $$ = $1; }
      ;
 
-lval : '(' tIDENTIFIER ')'            { $$ = new cdk::variable_node(LINE, $2); }
+lval : tIDENTIFIER                    { $$ = new cdk::variable_node(LINE, $1); }
      | '(' tINDEX expr expr ')'       { $$ = new til::index_node(LINE, $3, $4); }
      ;
 

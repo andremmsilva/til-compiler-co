@@ -3,6 +3,8 @@
 
 #include "targets/basic_ast_visitor.h"
 #include <cdk/ast/basic_node.h>
+#include <cdk/types/types.h>
+#include "til_parser.tab.h"
 
 namespace til {
 
@@ -31,6 +33,10 @@ namespace til {
             openTag(node->label(), lvl);
         }
 
+        void openTag(const cdk::basic_node *node, int lvl, const std::string &extra) {
+            os() << std::string(lvl, ' ') + "<" + node->label() + " " + extra + ">" << std::endl;
+        }
+
         void closeTag(const std::string &tag, int lvl) {
             os() << std::string(lvl, ' ') + "</" + tag + ">" << std::endl;
         }
@@ -39,12 +45,31 @@ namespace til {
             closeTag(node->label(), lvl);
         }
 
-        void emptyTag(const std::string &tag, int lvl) {
+        void selfClosingTag(const std::string &tag, int lvl) {
             os() << std::string(lvl, ' ') + "<" + tag + "/>" << std::endl;
         }
 
-        void emptyTag(const cdk::basic_node *node, int lvl) {
-            emptyTag(node->label(), lvl);
+        void selfClosingTag(const cdk::basic_node *node, int lvl) {
+            selfClosingTag(node->label(), lvl);
+        }
+
+        void selfClosingTag(const cdk::basic_node *node, int lvl, const std::string &extra) {
+            os() << std::string(lvl, ' ') + "<" + node->label() + " " + extra + "/>" << std::endl;
+        }
+
+        const char *qualifierText(int qualifierTok) {
+            switch (qualifierTok) {
+                case tPUBLIC:
+                    return "public";
+                case tPRIVATE:
+                    return "private";
+                case tEXTERNAL:
+                    return "external";
+                case tFORWARD:
+                    return "forward";
+                default:
+                    throw std::invalid_argument("Unknown qualifier");
+            }
         }
 
     protected:

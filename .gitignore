@@ -1,6 +1,7 @@
 .vscode
 .auto
 .idea
+auto-tests/
 til_scanner.cpp
 **.o
 **.output
