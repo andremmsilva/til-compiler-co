@@ -1,6 +1,6 @@
 %option c++ prefix="til_scanner_" outfile="til_scanner.cpp"
 %option stack noyywrap yylineno 8bit debug
-%{ 
+%{
 // make relevant includes before including the parser's tab file
 #include <string>
 #include <cdk/ast/sequence_node.h>
@@ -10,39 +10,117 @@
 
 // don't change this
 #define yyerror LexerError
+
+#define SAFE_MAKE_INT(base) { \
+  try { \
+    yylval.i = std::stoi(yytext, nullptr, base); \
+    return tINTEGER; \
+  } catch (const std::out_of_range&) { \
+    yyerror("overflow"); \
+  } \
+}
+
+#define SAFE_MAKE_DOUBLE { \
+  try { \
+    yylval.d = std::stod(yytext); \
+    return tDOUBLE; \
+  } catch (const std::out_of_range&) { \
+    yyerror("overflow"); \
+  } \
+}
+
 %}
-%x X_STRING
+
+EXP [Ee][+-]?[0-9]+
+
+%x X_COMMENT X_STRING X_IGNORE_STR
+
 %%
   yydebug=1; set_debug(1);
 
-"--".*                 ; /* ignore comments */
+";".*                 ; /* comentários "explicativos" */
 
-">="                   return tGE; 
-"<="                   return tLE; 
-"=="                   return tEQ; 
-"!="                   return tNE; 
+"/*"                   yy_push_state(X_COMMENT);
+<X_COMMENT>"*/"        yy_pop_state();
+<X_COMMENT>"/*"        yy_push_state(X_COMMENT);
+<X_COMMENT>.|\n        ; /* ignorar tudo dentro dos comments */
 
-"while"                return tWHILE; 
-"if"                   return tIF; 
-"else"                 return tELSE; 
-"print"                return tPRINT; 
-"read"                 return tREAD; 
-"begin"                return tBEGIN; 
-"end"                  return tEND; 
+">="                   return tGE;
+"<="                   return tLE;
+"=="                   return tEQ;
+"!="                   return tNE;
+"&&"                   return tAND;
+"||"                   return tOR;
 
-[A-Za-z][A-Za-z0-9_]*  yylval.s = new std::string(yytext); return tIDENTIFIER;
+"int"                  return tINT_T;
+"double"               return tDOUBLE_T;
+"string"               return tSTRING_T;
+"void"                 return tVOID_T;
 
-\'                     yy_push_state(X_STRING); yylval.s = new std::string("");
-<X_STRING>\'           yy_pop_state(); return tSTRING;
-<X_STRING>\\\'         *yylval.s += yytext + 1;
-<X_STRING>.            *yylval.s += yytext;
+"external"             return tEXTERNAL;
+"forward"              return tFORWARD;
+"public"               return tPUBLIC;
+"var"                  return tVAR;
+
+"loop"                 return tLOOP;
+"stop"                 return tSTOP;
+"next"                 return tNEXT;
+"return"               return tRETURN;
+
+"if"                   return tIF;
+
+"read"                 return tREAD;
+"null"                 return tNULL;
+"sizeof"               return tSIZEOF;
+"objects"              return tOBJECTS;
+"index"                return tINDEX;
+"set"                  return tSET;
+
+"program"              return tPROGRAM;
+"block"                return tBLOCK;
+"function"             return tFUNCTION;
+
+"print"                return tPRINT;
+"println"              return tPRINTLN;
+
+[A-Za-z][A-Za-z0-9]*   yylval.s = new std::string(yytext); return tIDENTIFIER;
+
+\"                     yy_push_state(X_STRING); yylval.s = new std::string("");
+<X_STRING>\"           yy_pop_state(); return tSTR;
+<X_STRING>\\\"         *yylval.s += yytext + 1;
+<X_STRING>\\\\         *yylval.s += yytext + 1;
+<X_STRING>\\t          *yylval.s += '\t';
+<X_STRING>\\n          *yylval.s += '\n';
+<X_STRING>\\r          *yylval.s += '\r';
+<X_STRING>\\0          yy_push_state(X_IGNORE_STR);
+<X_STRING>\\[0-7]{1,3} {
+                          int i = std::stoi(yytext + 1, nullptr, 8);
+                          if (i > 255) yyerror("octal in string out of range");
+                          *yylval.s += (char) i;
+                       }
+<X_STRING>\\.          *yylval.s += yytext + 1;
 <X_STRING>\n           yyerror("newline in string");
+<X_STRING>\0           yyerror("null byte in string");
+<X_STRING>.            *yylval.s += yytext;
 
-[0-9]+                 yylval.i = strtol(yytext, nullptr, 10); return tINTEGER;
+<X_IGNORE_STR>\"       yy_pop_state(); yy_pop_state(); return tSTR;
+<X_IGNORE_STR>\\\"     ;
+<X_IGNORE_STR>\\\\     ;
+<X_IGNORE_STR>\n       yyerror("newline in string");
+<X_IGNORE_STR>\0       yyerror("null byte in string");
+<X_IGNORE_STR>.        ;
 
-[-()<>=+*/%;{}.]       return *yytext;
+0|[1-9][0-9]*          SAFE_MAKE_INT(10);  /* base 10 integer */
+0x[0-9a-fA-F]+         SAFE_MAKE_INT(16);  /* base 16 integer */
+0x[0-9a-zA-Z]+         yyerror("invalid base 16 int");
 
-[ \t\n]+               ; /* ignore whitespace */
+[0-9]*\.[0-9]+{EXP}?   SAFE_MAKE_DOUBLE;
+[0-9]+\.[0-9]*{EXP}?   SAFE_MAKE_DOUBLE;
+[0-9]+{EXP}            SAFE_MAKE_DOUBLE;
+
+[-()<>=+*/%;{},\[\]@?~]  return *yytext;
+
+[ \t\n\r]+             ; /* ignore whitespace */
 
 .                      yyerror("Unknown character");
 
