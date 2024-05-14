@@ -2,6 +2,7 @@
 .auto
 .idea
 auto-tests/
+test.sh
 til_scanner.cpp
 **.o
 **.output

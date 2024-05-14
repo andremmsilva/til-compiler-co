@@ -118,7 +118,7 @@ EXP [Ee][+-]?[0-9]+
 [0-9]+\.[0-9]*{EXP}?   SAFE_MAKE_DOUBLE;
 [0-9]+{EXP}            SAFE_MAKE_DOUBLE;
 
-[-()<>=+*/%;{},\[\]@?~]  return *yytext;
+[-()<>=+*/%\[\]@?~!]   return *yytext;
 
 [ \t\n\r]+             ; /* ignore whitespace */
 
