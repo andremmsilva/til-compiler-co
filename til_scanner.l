@@ -112,7 +112,6 @@ EXP [Ee][+-]?[0-9]+
 
 0|[1-9][0-9]*          SAFE_MAKE_INT(10);  /* base 10 integer */
 0x[0-9a-fA-F]+         SAFE_MAKE_INT(16);  /* base 16 integer */
-0x[0-9a-zA-Z]+         yyerror("invalid base 16 int");
 
 [0-9]*\.[0-9]+{EXP}?   SAFE_MAKE_DOUBLE;
 [0-9]+\.[0-9]*{EXP}?   SAFE_MAKE_DOUBLE;

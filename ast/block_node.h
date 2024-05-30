@@ -5,13 +5,12 @@
 
 namespace til {
 
-  class block_node: public cdk::basic_node {
-    cdk::sequence_node *_declarations, *_instructions;
+  class block_node : public cdk::basic_node {
+    cdk::sequence_node* _declarations, * _instructions;
 
   public:
-    block_node(int lineno, cdk::sequence_node *declarations, cdk::sequence_node *instructions) :
-        cdk::basic_node(lineno), _declarations(declarations), _instructions(instructions) {
-    }
+    block_node(int lineno, cdk::sequence_node* declarations, cdk::sequence_node* instructions) :
+      cdk::basic_node(lineno), _declarations(declarations), _instructions(instructions) {}
 
   public:
     cdk::sequence_node* declarations() {
@@ -21,7 +20,7 @@ namespace til {
       return _instructions;
     }
 
-    void accept(basic_ast_visitor *sp, int level) {
+    void accept(basic_ast_visitor* sp, int level) {
       sp->do_block_node(this, level);
     }
 

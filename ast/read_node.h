@@ -12,10 +12,9 @@ namespace til {
     class read_node : public cdk::expression_node {
 
     public:
-        explicit read_node(int lineno) : cdk::expression_node(lineno) {
-        }
+        explicit read_node(int lineno) : cdk::expression_node(lineno) {}
 
-        void accept(basic_ast_visitor *sp, int level) { sp->do_read_node(this, level); }
+        void accept(basic_ast_visitor* sp, int level) { sp->do_read_node(this, level); }
 
     };
 

@@ -52,7 +52,6 @@
 %left tGE tLE '>' '<'
 %left '+' '-'
 %left '*' '/' '%'
-%nonassoc tUNARY
 %nonassoc '(' 
 
 %type <sequence> qualified_decls declarations instructions exprs function_args
@@ -176,8 +175,8 @@ expr : tINTEGER                       { $$ = new cdk::integer_node(LINE, $1); }
      | tDOUBLE                        { $$ = new cdk::double_node(LINE, $1); }
      | tSTR                           { $$ = new cdk::string_node(LINE, *$1); delete $1; }
      | tNULL                          { $$ = new til::null_node(LINE); }
-     | '(' '+' expr ')' %prec tUNARY  { $$ = new cdk::unary_plus_node(LINE, $3); }
-     | '(' '-' expr ')' %prec tUNARY  { $$ = new cdk::unary_minus_node(LINE, $3); }
+     | '(' '+' expr ')'               { $$ = new cdk::unary_plus_node(LINE, $3); }
+     | '(' '-' expr ')'               { $$ = new cdk::unary_minus_node(LINE, $3); }
      | '(' '~' expr ')'               { $$ = new cdk::not_node(LINE, $3); }
      | '(' '+' expr expr ')'          { $$ = new cdk::add_node(LINE, $3, $4); }
      | '(' '-' expr expr ')'          { $$ = new cdk::sub_node(LINE, $3, $4); }

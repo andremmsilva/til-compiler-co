@@ -3,19 +3,14 @@
 
 #include <cdk/ast/unary_operation_node.h>
 
-namespace til
-{
+namespace til {
 
-    class alloc_node : public cdk::unary_operation_node
-    {
+    class alloc_node : public cdk::unary_operation_node {
     public:
-        alloc_node(int lineno, cdk::expression_node *argument) : cdk::unary_operation_node(lineno, argument)
-        {
-        }
+        alloc_node(int lineno, cdk::expression_node* argument) : cdk::unary_operation_node(lineno, argument) {}
 
     public:
-        void accept(basic_ast_visitor *sp, int level)
-        {
+        void accept(basic_ast_visitor* sp, int level) {
             sp->do_alloc_node(this, level);
         }
     };
