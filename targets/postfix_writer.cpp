@@ -731,10 +731,10 @@ void til::postfix_writer::do_variable_declaration_node(til::variable_declaration
         return;
     }
 
-    if (!instanceOf<cdk::integer_node>(node->initializer()) ||
-        !instanceOf<cdk::double_node>(node->initializer()) ||
-        !instanceOf<cdk::string_node>(node->initializer()) ||
-        !instanceOf<til::null_node>(node->initializer()) ||
+    if (!instanceOf<cdk::integer_node>(node->initializer()) &&
+        !instanceOf<cdk::double_node>(node->initializer()) &&
+        !instanceOf<cdk::string_node>(node->initializer()) &&
+        !instanceOf<til::null_node>(node->initializer()) &&
         !instanceOf<til::function_node>(node->initializer())) {
         THROW_ERROR("non-literal initializer for global variable '" + symbol->name() + "'");
     }
