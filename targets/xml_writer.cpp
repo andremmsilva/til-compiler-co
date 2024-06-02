@@ -15,6 +15,10 @@ void til::xml_writer::do_data_node(cdk::data_node *const node, int lvl) {
     // EMPTY
 }
 
+void til::xml_writer::do_with_node(til::with_node *const node, int lvl) {
+    selfClosingTag(node, lvl);
+}
+
 //---------------------------------------------------------------------------
 
 void til::xml_writer::do_sequence_node(cdk::sequence_node *const node, int lvl) {

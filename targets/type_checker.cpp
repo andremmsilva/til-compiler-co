@@ -92,6 +92,46 @@ void til::type_checker::do_data_node(cdk::data_node* const node, int lvl) {
     // EMPTY
 }
 
+void til::type_checker::do_with_node(til::with_node *const node, int lvl) {
+    node->func()->accept(this, lvl + 4);
+    if(!node->func()->is_typed(cdk::TYPE_FUNCTIONAL)) {
+        throw std::string("wrong 1st argument for with node - must be a function");
+    }
+
+    node->vector()->accept(this, lvl + 4);
+    if(!node->vector()->is_typed(cdk::TYPE_POINTER)) {
+        throw std::string("wrong 2nd argument for with node - must be a pointer");
+    }
+
+    auto func = cdk::functional_type::cast(node->func()->type());
+    auto pointed = cdk::reference_type::cast(node->vector()->type())->referenced();
+    if(func->output(0)->name() != cdk::TYPE_VOID) {
+        throw std::string("wrong return type for function of with instruction");
+    }
+    if(func->input_length() != 1) {
+        throw std::string("invalid arguments for function of with instruction");
+    }
+    if(!compareTypes(func->input(0), pointed, true)) {
+        throw std::string("invalid arguments for with instruction");
+    }
+
+    node->low()->accept(this, lvl + 4);
+    if (node->low()->is_typed(cdk::TYPE_UNSPEC)) {
+        node->low()->type(cdk::primitive_type::create(4, cdk::TYPE_INT));
+    }
+    else if (!node->low()->is_typed(cdk::TYPE_INT)) {
+        throw std::string("wrong type in low of with instruction");
+    }
+
+    node->high()->accept(this, lvl + 4);
+    if (node->high()->is_typed(cdk::TYPE_UNSPEC)) {
+        node->high()->type(cdk::primitive_type::create(4, cdk::TYPE_INT));
+    }
+    else if (!node->high()->is_typed(cdk::TYPE_INT)) {
+        throw std::string("wrong type in high of with instruction");
+    }
+}
+
 //---------------------------------------------------------------------------
 //--- Data types ------------------------------------------------------------
 

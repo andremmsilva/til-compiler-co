@@ -43,7 +43,7 @@
 %token tIF tLOOP tSTOP tNEXT tRETURN
 %token tREAD tNULL tSIZEOF tOBJECTS tINDEX tSET
 %token tPROGRAM tBLOCK tFUNCTION
-%token tPRINT tPRINTLN
+%token tPRINT tPRINTLN tWITH
 
 %left tOR
 %left tAND
@@ -159,6 +159,7 @@ instruction : expr                            { $$ = new til::evaluation_node(LI
             | '(' tRETURN expr ')'            { $$ = new til::return_node(LINE, $3); }
             | '(' tRETURN ')'                 { $$ = new til::return_node(LINE, nullptr); }
             | '(' tLOOP expr instruction ')'  { $$ = new til::while_node(LINE, $3, $4); }
+            | '(' tWITH expr expr expr expr ')' { $$ = new til::with_node(LINE, $3, $4, $5, $6); }
             | if_instruction                  { $$ = $1; }
             | block                           { $$ = $1; }
             ;

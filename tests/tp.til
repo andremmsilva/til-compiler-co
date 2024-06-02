@@ -1,0 +1,19 @@
+(public printnr 
+    (function (void (int n)) 
+        (println n)
+    )
+)
+
+; the main function
+(program
+  (var low 0)
+  (var high 5)
+  (int! p (objects 5))
+  (set (index p 0) 1)
+  (set (index p 1) 2)
+  (set (index p 2) 3)
+  (set (index p 3) 4)
+  (set (index p 4) 5)
+  (with printnr p 0 3)
+  (return 0)
+)

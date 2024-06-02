@@ -64,6 +64,9 @@ void til::frame_size_calculator::do_not_node(cdk::not_node * const node, int lvl
 void til::frame_size_calculator::do_alloc_node(til::alloc_node * const node, int lvl) {
   // EMPTY
 }
+void til::frame_size_calculator::do_with_node(til::with_node * const node, int lvl) {
+  // EMPTY
+}
 void til::frame_size_calculator::do_add_node(cdk::add_node * const node, int lvl) {
   // EMPTY
 }

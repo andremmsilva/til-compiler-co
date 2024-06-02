@@ -86,6 +86,41 @@ void til::postfix_writer::convertCovariantNode(std::shared_ptr<cdk::basic_type> 
 
 //---------------------------------------------------------------------------
 
+void til::postfix_writer::do_with_node(til::with_node *const node, int lvl) {
+    ASSERT_SAFE_EXPRESSIONS;
+
+    _pf.ALIGN();
+    auto lineno = node->lineno();
+
+    std::string it_name = "_it";
+    auto it_init = dynamic_cast<cdk::integer_node *>(node->low());
+    auto it_decl = new til::variable_declaration_node(lineno, tPRIVATE, cdk::primitive_type::create(4, cdk::TYPE_INT), it_name, it_init);
+
+    // Declarar iterador
+    it_decl->accept(this, lvl + 2);
+
+    auto it_var = new cdk::variable_node(lineno, it_name);
+    auto it_rvalue = new cdk::rvalue_node(lineno, it_var);
+    auto comparison = new cdk::le_node(lineno, it_rvalue, node->high());
+
+    auto vec_el = new til::index_node(lineno, node->vector(), it_rvalue);
+    auto vec_el_rvalue = new cdk::rvalue_node(lineno, vec_el);
+    auto function_call = new til::function_call_node(lineno, node->func(), new cdk::sequence_node(lineno, vec_el_rvalue));
+
+    auto inc_literal = new cdk::integer_node(lineno, 1);
+    auto inc_add = new cdk::add_node(lineno, it_rvalue, inc_literal);
+    auto inc_it = new cdk::assignment_node(lineno, it_var, inc_add);
+    auto inc_eval = new til::evaluation_node(lineno, inc_it);
+
+    auto loop_body = new cdk::sequence_node(lineno, function_call);
+    loop_body = new cdk::sequence_node(lineno, inc_eval, loop_body);
+
+    auto iterate_loop = new til::while_node(lineno, comparison, loop_body);
+    iterate_loop->accept(this, lvl + 2);
+
+    _pf.ALIGN();
+}
+
 void til::postfix_writer::do_nil_node(cdk::nil_node *const node, int lvl) {
     // EMPTY
 }
